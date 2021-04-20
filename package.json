@@ -1,0 +1,10 @@
+{
+  "name": "deep-clone",
+  "version": "0.1.0",
+  "description": "deep clone",
+  "main": "src/index.js",
+  "repository": "git@github.com:dreamqyq/deepClone.git",
+  "author": "EnochQin <qyqdream@gmail.com>",
+  "license": "MIT",
+  "private": false
+}
