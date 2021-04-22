@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "test": "mocha test/**/*.js"
+    "test": "mocha test/**/*.spec.js"
   },
   "devDependencies": {
     "chai": "^4.3.4",
