@@ -9,7 +9,7 @@ const deepClone = (source) => {
         result = new Array();
         break;
       case "Date":
-        result = new Date();
+        result = new Date(source.getTime());
         break;
       case "Function":
         result = function () {

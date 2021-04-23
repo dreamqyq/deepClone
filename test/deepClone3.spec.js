@@ -83,14 +83,22 @@ describe("deepClone3 能复制特殊对象", () => {
       assert(a.xxx !== a2.xxx);
     });
     it("可以复制日期", () => {
-      const a = new Date();
-      a.xxx = { yyy: { zzz: 1 } };
-      const a2 = deepClone(a);
-      assert(a !== a2);
-      assert(a.getTime() === a2.getTime());
-      assert(a.xxx.yyy.zzz === a2.xxx.yyy.zzz);
-      assert(a.xxx.yyy !== a2.xxx.yyy);
-      assert(a.xxx !== a2.xxx);
+      const a1 = new Date();
+      a1.xxx = { yyy: { zzz: 1 } };
+      const a2 = new Date("2013-03-01T01:10:00");
+      a2.xxx = { yyy: { zzz: 1 } };
+      const b1 = deepClone(a1);
+      const b2 = deepClone(a2);
+      assert(a1 !== b1);
+      assert(a1.getTime() === b1.getTime());
+      assert(a1.xxx.yyy.zzz === b1.xxx.yyy.zzz);
+      assert(a1.xxx.yyy !== b1.xxx.yyy);
+      assert(a1.xxx !== b1.xxx);
+      assert(a2 !== b2);
+      assert(a2.getTime() === b2.getTime());
+      assert(a2.xxx.yyy.zzz === b2.xxx.yyy.zzz);
+      assert(a2.xxx.yyy !== b2.xxx.yyy);
+      assert(a2.xxx !== b2.xxx);
     });
     it("能够复制 Boolean", () => {
       const a = new Boolean(true);
