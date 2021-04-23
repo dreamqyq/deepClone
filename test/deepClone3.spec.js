@@ -35,6 +35,16 @@ describe("deepClone3 能复制特殊对象", () => {
       assert(a.child !== a2.child);
       assert(a.child.name === a2.child.name);
     });
+    it("自动跳过原型属性", () => {
+      const a = Object.create({ name: "a" });
+      a.xxx = { yyy: { zzz: 1 } };
+      const a2 = deepClone(a);
+      assert(a !== a2);
+      assert.isFalse("name" in a2);
+      assert(a.xxx.yyy.zzz === a2.xxx.yyy.zzz);
+      assert(a.xxx.yyy !== a2.xxx.yyy);
+      assert(a.xxx !== a2.xxx);
+    });
     it("能够复制数组对象", () => {
       const a = [
         [11, 12],
@@ -82,12 +92,75 @@ describe("deepClone3 能复制特殊对象", () => {
       assert(a.xxx.yyy !== a2.xxx.yyy);
       assert(a.xxx !== a2.xxx);
     });
-    it("自动跳过原型属性", () => {
-      const a = Object.create({ name: "a" });
+    it("能够复制 Boolean", () => {
+      const a = new Boolean(true);
       a.xxx = { yyy: { zzz: 1 } };
       const a2 = deepClone(a);
       assert(a !== a2);
-      assert.isFalse("name" in a2);
+      assert(a.valueOf() === a2.valueOf());
+      assert(a.xxx.yyy.zzz === a2.xxx.yyy.zzz);
+      assert(a.xxx.yyy !== a2.xxx.yyy);
+      assert(a.xxx !== a2.xxx);
+    });
+    it("能够复制 Error", () => {
+      const a = new Error("error");
+      a.xxx = { yyy: { zzz: 1 } };
+      const a2 = deepClone(a);
+      assert(a !== a2);
+      assert(a.message === a2.message);
+      assert(a.xxx.yyy.zzz === a2.xxx.yyy.zzz);
+      assert(a.xxx.yyy !== a2.xxx.yyy);
+      assert(a.xxx !== a2.xxx);
+    });
+    it("能够复制 Map", () => {
+      const a = new Map();
+      const o = { x: 1, y: 2 };
+      a.set("name", "Enoch");
+      a.set("obj", o);
+      a.xxx = { yyy: { zzz: 1 } };
+      const a2 = deepClone(a);
+      assert(a !== a2);
+      assert(a.get("name") === a2.get("name"));
+      assert(a.get("obj") !== a2.get("obj"));
+      assert(a.get("obj").x === a2.get("obj").x);
+      assert(a.get("obj").y === a2.get("obj").y);
+      assert(a.xxx.yyy.zzz === a2.xxx.yyy.zzz);
+      assert(a.xxx.yyy !== a2.xxx.yyy);
+      assert(a.xxx !== a2.xxx);
+    });
+    it("能够复制 Set", () => {
+      const a = new Set();
+      const o = { name: "Enoch" };
+      a.add(o);
+      a.add(1);
+      a.xxx = { yyy: { zzz: 1 } };
+      const a2 = deepClone(a);
+      const aValues = a.values();
+      const a2Values = a2.values();
+      assert(a !== a2);
+      assert(aValues.next().value !== a2Values.next().value);
+      assert(a.values().next().value.name === a2.values().next().value.name);
+      assert(aValues.next().value === a2Values.next().value);
+      assert(a.xxx.yyy.zzz === a2.xxx.yyy.zzz);
+      assert(a.xxx.yyy !== a2.xxx.yyy);
+      assert(a.xxx !== a2.xxx);
+    });
+    it("能够复制 Number", () => {
+      const a = new Number("123");
+      a.xxx = { yyy: { zzz: 1 } };
+      const a2 = deepClone(a);
+      assert(a !== a2);
+      assert(a.valueOf() === a2.valueOf());
+      assert(a.xxx.yyy.zzz === a2.xxx.yyy.zzz);
+      assert(a.xxx.yyy !== a2.xxx.yyy);
+      assert(a.xxx !== a2.xxx);
+    });
+    it("能够复制 String", () => {
+      const a = new String("123");
+      a.xxx = { yyy: { zzz: 1 } };
+      const a2 = deepClone(a);
+      assert(a !== a2);
+      assert(a.valueOf() === a2.valueOf());
       assert(a.xxx.yyy.zzz === a2.xxx.yyy.zzz);
       assert(a.xxx.yyy !== a2.xxx.yyy);
       assert(a.xxx !== a2.xxx);
