@@ -1,3 +1,4 @@
+"use strict";
 const deepClone = (source) => {
   if (source instanceof Object) {
     let result;
