@@ -1,3 +1,4 @@
+"use strict";
 class DeepClone {
   constructor() {
     this.caches = [];
@@ -10,7 +11,16 @@ class DeepClone {
       this.caches.push([source, result]);
       for (let key in source) {
         if (source.hasOwnProperty(key)) {
-          result[key] = this.clone(source[key]);
+          const index = parseInt(key);
+          // String 对象用 for in 遍历，会自动遍历到 「第n个位置的字符」
+          // 而这个属性是只读属性，无法赋值，就会导致代码报错，需要跳过这些属性
+          if (
+            source.constructor.name !== "String" ||
+            (source.constructor.name === "String" &&
+              (index < 0 || index >= source.length || isNaN(index)))
+          ) {
+            result[key] = this.clone(source[key]);
+          }
         }
       }
       return result;
@@ -26,53 +36,42 @@ class DeepClone {
     }
   }
   initResult(source) {
-    let result;
-    switch (source.constructor.name) {
-      case 'Object':
-        result = {};
-        break;
-      case 'Array':
-        result = new Array();
-        break;
-      case 'Date':
-        result = new Date(source.getTime());
-        break;
-      case 'Function':
-        result = function () {
+    const Constructor = source.constructor;
+    switch (Constructor.name) {
+      case "Object":
+      case "Array":
+        return new Constructor();
+      case "String":
+      case "Boolean":
+      case "Number":
+        return new Constructor(source);
+      case "Date":
+        return new Date(source.getTime());
+      case "Function":
+        return function () {
           return source.apply(this, arguments);
         };
-        break;
-      case 'String':
-        result = new String(source.valueOf());
-        break;
-      case 'Boolean':
-        result = new Boolean(source.valueOf());
-        break;
-      case 'Number':
-        result = new Number(source.valueOf());
-        break;
-      case 'Set':
-        result = new Set();
-        source.forEach(value => {
+      case "Set": {
+        const result = new Set();
+        source.forEach((value) => {
           result.add(this.clone(value));
         });
-        break;
-      case 'Map':
-        result = new Map();
+        return result;
+      }
+      case "Map": {
+        const result = new Map();
         for (let [key, value] of source) {
           result.set(key, this.clone(value));
         }
-        break;
-      case 'Error':
-        result = new Error(source.message);
-        break;
-      case 'RegExp':
-        result = new RegExp(source.source, source.flags);
-        break;
+        return result;
+      }
+      case "Error":
+        return new Error(source.message);
+      case "RegExp":
+        return new RegExp(source.source, source.flags);
       default:
-        result = {};
+        return (result = new Object());
     }
-    return result;
   }
 }
 

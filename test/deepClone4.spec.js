@@ -2,7 +2,7 @@ const chai = require('chai');
 
 const assert = chai.assert;
 const deepClone = require('../src/deepClone4');
-describe('deepClone4 能复制特殊对象', () => {
+describe('deepClone4 能复制循环引用', () => {
   it('是一个类', () => {
     assert.isFunction(deepClone);
   });
