@@ -1,5 +1,5 @@
 const caches = [];
-const deepClone = source => {
+const deepClone = (source) => {
   if (source instanceof Object) {
     const cachesResult = findCloneResultFromCaches(source);
     if (cachesResult) return cachesResult;
@@ -16,7 +16,7 @@ const deepClone = source => {
   }
 };
 
-const findCloneResultFromCaches = source => {
+const findCloneResultFromCaches = (source) => {
   for (let i = 0; i < caches.length; i++) {
     if (caches[i][0] === source) {
       return caches[i][1];
@@ -24,54 +24,43 @@ const findCloneResultFromCaches = source => {
   }
 };
 
-const initResult = source => {
-  let result;
-  switch (source.constructor.name) {
-    case 'Object':
-      result = {};
-      break;
-    case 'Array':
-      result = new Array();
-      break;
-    case 'Date':
-      result = new Date(source.getTime());
-      break;
-    case 'Function':
-      result = function () {
+const initResult = (source) => {
+  const Constructor = source.constructor;
+  switch (Constructor.name) {
+    case "Object":
+    case "Array":
+      return new Constructor();
+    case "String":
+    case "Boolean":
+    case "Number":
+      return new Constructor(source);
+    case "Date":
+      return new Date(source.getTime());
+    case "Function":
+      return function () {
         return source.apply(this, arguments);
       };
-      break;
-    case 'String':
-      result = new String(source.valueOf());
-      break;
-    case 'Boolean':
-      result = new Boolean(source.valueOf());
-      break;
-    case 'Number':
-      result = new Number(source.valueOf());
-      break;
-    case 'Set':
-      result = new Set();
-      source.forEach(value => {
+    case "Set": {
+      const result = new Set();
+      source.forEach((value) => {
         result.add(deepClone(value));
       });
-      break;
-    case 'Map':
-      result = new Map();
+      return result;
+    }
+    case "Map": {
+      const result = new Map();
       for (let [key, value] of source) {
         result.set(key, deepClone(value));
       }
-      break;
-    case 'Error':
-      result = new Error(source.message);
-      break;
-    case 'RegExp':
-      result = new RegExp(source.source, source.flags);
-      break;
+      return result;
+    }
+    case "Error":
+      return new Error(source.message);
+    case "RegExp":
+      return new RegExp(source.source, source.flags);
     default:
-      result = {};
+      return (result = new Object());
   }
-  return result;
 };
 
 module.exports = deepClone;
