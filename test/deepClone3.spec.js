@@ -25,6 +25,9 @@ describe("deepClone3 能复制特殊对象", () => {
     const sym = Symbol();
     const sym2 = deepClone(sym);
     assert(sym === sym2);
+    const bi = 12345678901234567890n;
+    const bi2 = deepClone(bi);
+    assert(bi === bi2);
   });
   describe("对象", () => {
     it("能够复制普通对象", () => {

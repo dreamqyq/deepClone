@@ -25,6 +25,9 @@ describe("deepClone2 自动跳过原型属性", () => {
     const sym = Symbol();
     const sym2 = deepClone(sym);
     assert(sym === sym2);
+    const bi = 12345678901234567890n;
+    const bi2 = deepClone(bi);
+    assert(bi === bi2);
   });
   describe("复制对象对象", () => {
     it("能够复制普通对象", () => {

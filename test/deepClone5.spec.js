@@ -25,6 +25,9 @@ describe("deepClone5 能复制循环引用", () => {
     const sym = Symbol();
     const sym2 = new DeepClone().clone(sym);
     assert(sym === sym2);
+    const bi = 12345678901234567890n;
+    const bi2 = new DeepClone().clone(bi);
+    assert(bi === bi2);
   });
   describe("对象", () => {
     it("能够复制普通对象", () => {
